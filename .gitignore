@@ -11,3 +11,4 @@ browserstack.err
 yarn-error.log
 
 .DS_Store
+.envrc
