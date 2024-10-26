@@ -10,12 +10,9 @@
     "target": "es5",
     "sourceMap": true,
     "jsx": "react-jsx",
-    "types": [
-      "node",
-      "jest"
-    ],
+    "types": ["node", "jest"],
     "lib": ["ES2016", "DOM"],
-
+    "skipLibCheck": true,
     "plugins": [
       {
         "name": "typescript-tslint-plugin"
