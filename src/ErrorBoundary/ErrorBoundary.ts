@@ -1,6 +1,6 @@
-import { ReactNode, Component, isValidElement } from 'react';
+import { ReactNode, Component, isValidElement } from "react";
 
-import { getGlobalObject } from '../utils/getGlobalObject';
+import { getGlobalObject } from "../utils/getGlobalObject";
 
 type FallbackRenderer = (error: Error) => React.ReactNode;
 
@@ -10,7 +10,7 @@ interface ErrorBoundaryState {
   prevScope: string;
 }
 
-export interface ErrorBoundaryProps {
+export interface ErrorBoundaryProps extends React.PropsWithChildren {
   fallback: ReactNode | FallbackRenderer;
   scope?: string;
 }
@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<
   ErrorBoundaryState
 > {
   static defaultProps = {
-    scope: 'error-boundary',
+    scope: "error-boundary",
   };
 
   constructor(props: any) {
@@ -59,7 +59,7 @@ export class ErrorBoundary extends Component<
         {
           scope: this.props.scope,
         },
-        'source'
+        "source"
       );
     }
   }
@@ -72,9 +72,9 @@ export class ErrorBoundary extends Component<
       return this.props.children;
     }
 
-    if (isValidElement(fallback) || typeof fallback === 'string') {
+    if (isValidElement(fallback) || typeof fallback === "string") {
       return fallback;
-    } else if (typeof fallback === 'function') {
+    } else if (typeof fallback === "function") {
       return fallback(error);
     }
 

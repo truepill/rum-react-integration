@@ -6,10 +6,12 @@ import { RumComponentContext } from "./rum-component-context";
 /**
  * Context Provider to add a new component to the action breadcrumbs. Useful for class Components.
  */
-export const RumComponentContextProvider: React.FunctionComponent<{
-  componentName: string;
-  customAttributes?: object;
-}> = ({ componentName, customAttributes, children }) => {
+export const RumComponentContextProvider: React.FunctionComponent<
+  React.PropsWithChildren<{
+    componentName: string;
+    customAttributes?: object;
+  }>
+> = ({ componentName, customAttributes, children }) => {
   const parentContext = useContext(RumComponentContext);
   const newContext = useMemo<ComponentContext>(
     () => ({
