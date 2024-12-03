@@ -6,6 +6,7 @@ The RUM Component Context provider helps scoping the context of the RUM errors a
 Users can then define a specific context for each of their React component by naming it and passing it some attributes.
 
 Once these contexts provided, any errors or actions generated within them will contain :
+
 - a component breadcrumbs path generated form the parent context names
 - Optional: some custom defined attributes
 
@@ -13,7 +14,7 @@ Once these contexts provided, any errors or actions generated within them will c
 
 1. Have Datadog RUM SDK up and running. [Instructions](https://github.com/DataDog/browser-sdk/blob/main/packages/rum/README.md);
 2. Add this repository to your project with `yarn add https://github.com/DataDog/rum-react-integration-examples`;
-   + Optionally, you can copy the contents of this repo and adapt it to your needs.
+   - Optionally, you can copy the contents of this repo and adapt it to your needs.
 
 ## Usage
 
@@ -32,11 +33,13 @@ Use the provided custom hooks `useRumAction` and `useRumError` and their callbac
 ```
 componentName: string
 ```
+
 > Set the current breadcrumbs step
 
 ```
 customAttributes?: object;
 ```
+
 > Optional property that will populate a custom field for each of the errors and actions under this context
 
 ### WithRumComponentContext (React component decorator alternative)
@@ -44,16 +47,19 @@ customAttributes?: object;
 ```
 componentName: string
 ```
+
 > Set the current breadcrumbs step
 
 ```
 options: { customAttributes?: object; } | undefined
 ```
+
 > Optional property that will populate a custom field for each of the errors and actions under this context
 
 ```
 Component: React.FunctionComponent
 ```
+
 > Child component that will wrapped in the RumComponentContextProvider
 
 ## Example
@@ -123,6 +129,7 @@ function FnComponent() {
 ```
 
 ## Expected Results
+
 The usage of both `WithRumComponentContext` and `RumComponentContextProvider` will populate your RUM's [custom action events](https://docs.datadoghq.com/real_user_monitoring/guide/send-rum-custom-actions/) with the following fields:
 
 `purpose: string`

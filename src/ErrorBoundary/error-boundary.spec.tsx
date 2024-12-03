@@ -1,54 +1,54 @@
-import { render, screen } from '@testing-library/react';
-import { getGlobalObject } from '../utils/getGlobalObject';
-import { ErrorBoundary } from './ErrorBoundary';
+import { render, screen } from '@testing-library/react'
+import React from 'react'
+
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { ErrorBoundary } from './ErrorBoundary'
 
 jest.mock('../utils/getGlobalObject', () => ({
-    getGlobalObject: jest.fn()
-}));
+  getGlobalObject: jest.fn(),
+}))
 
 const Throws = () => {
-  throw new Error('Oh no!');
-};
+  throw new Error('Oh no!')
+}
 
 describe('ErrorBoundary', () => {
-  let onErrorSpy: jest.Mock;
-  let addErrorSpy: jest.Mock;
+  let onErrorSpy: jest.Mock
+  let addErrorSpy: jest.Mock
 
   let rumAgent: {
     addError: () => void
-  };
+  }
 
   beforeEach(() => {
-    onErrorSpy = jest.fn();
-    addErrorSpy = jest.fn();
+    onErrorSpy = jest.fn()
+    addErrorSpy = jest.fn()
 
-    global.window.onerror = onErrorSpy;
+    global.window.onerror = onErrorSpy
     rumAgent = {
       addError: addErrorSpy,
-    } as any;
+    } as any
 
-   (getGlobalObject as jest.Mock).mockReturnValue({
-     DD_RUM: rumAgent
-   });
-  });
+    ;(getGlobalObject as jest.Mock).mockReturnValue({
+      DD_RUM: rumAgent,
+    })
+  })
 
   afterEach(() => {
-    jest.restoreAllMocks();
-  });
+    jest.restoreAllMocks()
+  })
 
-  const ErrorRenderer = (error: Error) => (
-    <h1>Pretty error displayed {error.message}</h1>
-  );
+  const ErrorRenderer = (error: Error) => <h1>Pretty error displayed {error.message}</h1>
 
   it('sends errors to addError', () => {
     render(
       <ErrorBoundary fallback={ErrorRenderer}>
         <Throws />
-      </ErrorBoundary>
-    );
+      </ErrorBoundary>,
+    )
 
-    screen.getByText(/Pretty error displayed/i);
-    expect(onErrorSpy).toHaveBeenCalled();
-    expect(addErrorSpy).toHaveBeenCalledTimes(1);
-  });
-});
+    screen.getByText(/Pretty error displayed/i)
+    expect(onErrorSpy).toHaveBeenCalled()
+    expect(addErrorSpy).toHaveBeenCalledTimes(1)
+  })
+})

@@ -1,166 +1,165 @@
-import { RumRoute } from './RumRoute';
-import { Router, Redirect, Route } from 'react-router-dom';
-import type { RouteProps } from 'react-router-dom';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { act, render } from '@testing-library/react'
+import { createMemoryHistory } from 'history'
+import React, { Component } from 'react'
+import type { RouteProps } from 'react-router-dom'
+import { Redirect, Route, Router } from 'react-router-dom'
 
-import { createMemoryHistory } from 'history';
-import { getGlobalObject } from '../utils/getGlobalObject';
-import { render, screen } from '@testing-library/react';
-import { Component } from 'react';
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { RumRoute } from './RumRoute'
 
-const history = createMemoryHistory();
+const history = createMemoryHistory()
 
-const defaultProps: RouteProps = {};
+const defaultProps: RouteProps = {}
 
-const globalObj = getGlobalObject<Window>();
+const globalObj = getGlobalObject<Window>()
 
 describe('<RumRoute />', () => {
   const buildSubject = (props = defaultProps) => {
-    render(
+    return render(
       <Router history={history}>
-        <Redirect from="/" to="/home" />
-        <RumRoute path="/home">Home is where the heart is</RumRoute>
-        <RumRoute path="/thread/:threadId">
-          Here's some relevant info regarding planks and rope skipping
-          <RumRoute path="/thread/:threadId/comment/:commentId">Nice</RumRoute>
+        <Redirect from='/' to='/home' />
+        <RumRoute path='/home'>Home is where the heart is</RumRoute>
+        <RumRoute path='/thread/:threadId'>
+          Here&apos;s some relevant info regarding planks and rope skipping
+          <RumRoute path='/thread/:threadId/comment/:commentId'>Nice</RumRoute>
         </RumRoute>
-        <Route path="/about">
-          <RumRoute path="/about/history">Last edited: yesterday</RumRoute>
+        <Route path='/about'>
+          <RumRoute path='/about/history'>Last edited: yesterday</RumRoute>
         </Route>
-        <RumRoute path="/rumRoute" {...props} />
+        <RumRoute path='/rumRoute' {...props} />
         <div>Footer</div>
-      </Router>
-    );
-  };
+      </Router>,
+    )
+  }
 
   beforeEach(() => {
     globalObj.DD_RUM = {
       getInitConfiguration: () => ({ trackViewsManually: true }),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       startView: () => {},
-    } as any;
-  });
+    } as any
+  })
 
   afterAll(() => {
-    jest.restoreAllMocks();
-  });
+    jest.restoreAllMocks()
+  })
 
   describe('startView calls', () => {
     it('should be able call RUM startView through router redirect', () => {
-      jest.spyOn(globalObj.DD_RUM!, 'startView');
-      buildSubject();
+      jest.spyOn(globalObj.DD_RUM!, 'startView')
+      const { getByText } = buildSubject()
 
-      screen.getByText(/Home is where the heart is/i);
+      getByText(/Home is where the heart is/i)
 
-      expect(globalObj.DD_RUM?.startView).toHaveBeenCalledTimes(1);
-      expect(globalObj.DD_RUM?.startView).toHaveBeenLastCalledWith('/home');
-    });
+      expect(globalObj.DD_RUM?.startView).toHaveBeenCalledTimes(1)
+      expect(globalObj.DD_RUM?.startView).toHaveBeenLastCalledWith('/home')
+    })
 
     it('should call RUM startView through nested routes', () => {
-      buildSubject();
+      const { getByText } = buildSubject()
 
-      jest.spyOn(globalObj.DD_RUM!, 'startView');
-      history.push('/thread/10/comment/20');
+      jest.spyOn(globalObj.DD_RUM!, 'startView')
+      act(() => history.push('/thread/10/comment/20'))
 
-      screen.getByText(/Nice/i);
+      getByText(/Nice/i)
 
-      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(
-        1,
-        '/thread/:threadId'
-      );
-      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(
-        2,
-        '/thread/:threadId/comment/:commentId'
-      );
-    });
+      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(1, '/thread/:threadId')
+      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(2, '/thread/:threadId/comment/:commentId')
+    })
 
-    it('should call RUM startView when combining Route and RumRoute ', () => {
-      buildSubject();
+    it('should call RUM startView when combining Route and RumRoute', () => {
+      const { getByText } = buildSubject()
 
-      jest.spyOn(globalObj.DD_RUM!, 'startView');
-      history.push('/about/history');
+      jest.spyOn(globalObj.DD_RUM!, 'startView')
+      act(() => history.push('/about/history'))
 
-      screen.getByText(/Last edited: yesterday/i);
+      getByText(/Last edited: yesterday/i)
 
-      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(
-        1,
-        '/about/history'
-      );
-      expect(globalObj.DD_RUM?.startView).not.toHaveBeenCalledWith('/about');
-    });
-  });
+      expect(globalObj.DD_RUM?.startView).toHaveBeenNthCalledWith(1, '/about/history')
+      expect(globalObj.DD_RUM?.startView).not.toHaveBeenCalledWith('/about')
+    })
+  })
 
   describe('ReactRouter children rendering', () => {
     it('should render strings', () => {
-      buildSubject({ children: 'This is a string' });
-      history.push('/rumRoute');
+      const { getByText } = buildSubject({ children: 'This is a string' })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a string/i);
-    });
+      const node = getByText(/This is a string/i)
+      expect(node).toBeInTheDocument()
+    })
 
     it('should render JSX', () => {
-      buildSubject({
+      const { getByText } = buildSubject({
         children: <div>This is a JSX children</div>,
-      });
-      history.push('/rumRoute');
+      })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a JSX children/i);
-    });
+      const node = getByText(/This is a JSX children/i)
+      expect(node).toBeInTheDocument()
+    })
 
     it('should render a React element', () => {
-      const TestChildren = () => <div>This is a React element</div>;
-      buildSubject({ children: <TestChildren /> });
-      history.push('/rumRoute');
+      const TestChildren = () => <div>This is a React element</div>
+      const { getByText } = buildSubject({ children: <TestChildren /> })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a React element/i);
-    });
-  });
+      const node = getByText(/This is a React element/i)
+      expect(node).toBeInTheDocument()
+    })
+  })
 
   describe('ReactRouter render prop rendering', () => {
     it('should render strings', () => {
-      buildSubject({ render: () => 'This is a string' });
-      history.push('/rumRoute');
+      const { getByText } = buildSubject({ render: () => 'This is a string' })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a string/i);
-    });
+      const node = getByText(/This is a string/i)
+      expect(node).toBeInTheDocument()
+    })
 
     it('should render JSX', () => {
-      buildSubject({
+      const { getByText } = buildSubject({
         render: () => <div>This is a JSX children</div>,
-      });
-      history.push('/rumRoute');
+      })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a JSX children/i);
-    });
+      const node = getByText(/This is a JSX children/i)
+      expect(node).toBeInTheDocument()
+    })
 
     it('should render a React element', () => {
-      const TestChildren = () => <div>This is a React element</div>;
-      buildSubject({ render: () => <TestChildren /> });
-      history.push('/rumRoute');
+      const TestChildren = () => <div>This is a React element</div>
+      const { getByText } = buildSubject({ render: () => <TestChildren /> })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a React element/i);
-    });
-  });
+      const node = getByText(/This is a React element/i)
+      expect(node).toBeInTheDocument()
+    })
+  })
 
   describe('ReactRouter component prop rendering', () => {
     it('should render a React Functional Component', () => {
-      const TestChildren = () => (
-        <div>This is a React Functional Component</div>
-      );
-      buildSubject({ render: () => <TestChildren /> });
-      history.push('/rumRoute');
+      const TestChildren = () => <div>This is a React Functional Component</div>
+      const { getByText } = buildSubject({ render: () => <TestChildren /> })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a React Functional Component/i);
-    });
+      const node = getByText(/This is a React Functional Component/i)
+      expect(node).toBeInTheDocument()
+    })
 
     it('should render a React Class Component', () => {
       const TestChildren = class Test extends Component {
         render() {
-          return <div>This is a React Class Component</div>;
+          return <div>This is a React Class Component</div>
         }
-      };
-      buildSubject({ render: () => <TestChildren /> });
-      history.push('/rumRoute');
+      }
+      const { getByText } = buildSubject({ render: () => <TestChildren /> })
+      act(() => history.push('/rumRoute'))
 
-      screen.getByText(/This is a React Class Component/i);
-    });
-  });
-});
+      const node = getByText(/This is a React Class Component/i)
+      expect(node).toBeInTheDocument()
+    })
+  })
+})

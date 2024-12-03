@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * inspired by https://mathiasbynens.be/notes/globalthis
  */

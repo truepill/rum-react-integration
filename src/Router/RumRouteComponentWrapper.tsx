@@ -1,34 +1,20 @@
-import { isValidElement, useRef } from 'react';
-import type { RouteProps, RouteComponentProps } from 'react-router-dom';
-import { getGlobalObject } from '../utils/getGlobalObject';
+import React, { isValidElement, useRef } from 'react'
+import type { RouteComponentProps, RouteProps } from 'react-router-dom'
 
-type RumRouteComponentType =
-  | RouteProps['component']
-  | RouteProps['children']
-  | RouteProps['render'];
+import { getGlobalObject } from '../utils/getGlobalObject'
 
-function isClassComponent(
-  component: RumRouteComponentType
-): component is React.ComponentClass {
-  return (
-    typeof component === 'function' && !!component.prototype?.isReactComponent
-  );
+type RumRouteComponentType = RouteProps['component'] | RouteProps['children'] | RouteProps['render']
+
+function isClassComponent(component: RumRouteComponentType): component is React.ComponentClass {
+  return typeof component === 'function' && !!component.prototype?.isReactComponent
 }
 
-function isFunctionComponent(
-  component: RumRouteComponentType
-): component is React.FunctionComponent<any> {
-  return (
-    typeof component === 'function' &&
-    component.hasOwnProperty('props') &&
-    isValidElement(component)
-  );
+function isFunctionComponent(component: RumRouteComponentType): component is React.FunctionComponent<any> {
+  return typeof component === 'function' && component.hasOwnProperty('props') && isValidElement(component)
 }
 
-function isReactRouterComponent(
-  component: RumRouteComponentType
-): component is RouteProps['component'] {
-  return isClassComponent(component) || isFunctionComponent(component);
+function isReactRouterComponent(component: RumRouteComponentType): component is RouteProps['component'] {
+  return isClassComponent(component) || isFunctionComponent(component)
 }
 
 export const withRum = (component: RumRouteComponentType) =>
@@ -36,48 +22,43 @@ export const withRum = (component: RumRouteComponentType) =>
     useRef(
       (() => {
         if (!component) {
-          return;
+          return
         }
 
-        const globalObj = getGlobalObject<Window>();
+        const globalObj = getGlobalObject<Window>()
 
         if (!globalObj.DD_RUM) {
-          console.warn(
-            '@datadog/rum-react-integration: Datadog RUM SDK is not initialized.'
-          );
-          return;
+          console.warn('@datadog/rum-react-integration: Datadog RUM SDK is not initialized.')
+          return
         }
 
         if (!globalObj.DD_RUM?.startView) {
-          console.warn(
-            '@datadog/rum-react-integration: Manual tracking not supported. Try updating the Datadog RUM SDK.'
-          );
-          return;
+          console.warn('@datadog/rum-react-integration: Manual tracking not supported. Try updating the Datadog RUM SDK.')
+          return
         }
 
-        const manualTracking = !!globalObj.DD_RUM?.getInitConfiguration()
-          ?.trackViewsManually;
+        const manualTracking = !!globalObj.DD_RUM?.getInitConfiguration()?.trackViewsManually
         if (!manualTracking) {
           console.warn(
             '@datadog/rum-react-integration: The trackViewsManually flag in RUM initialization must be set to %ctrue%c.',
             'color:green',
-            'color:default'
-          );
-          return;
+            'color:default',
+          )
+          return
         }
 
-        globalObj.DD_RUM.startView(props.match.path);
-      })()
-    );
+        globalObj.DD_RUM.startView(props.match.path)
+      })(),
+    )
 
     if (!component) {
-      return <>{component}</>;
+      return <>{component}</>
     } else if (isReactRouterComponent(component)) {
-      const Component = component;
-      return <Component {...props} />;
+      const Component = component
+      return <Component {...props} />
     } else if (component instanceof Function) {
-      return <>{component(props)}</>;
+      return <>{component(props)}</>
     }
 
-    return <>{component}</>;
-  };
+    return <>{component}</>
+  }

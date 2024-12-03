@@ -1,1 +1,1 @@
-export { RumRoute } from './RumRoute';
+export { RumRoute } from './RumRoute'

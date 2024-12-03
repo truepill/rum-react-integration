@@ -1,52 +1,46 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import * as React from 'react';
+import { act, renderHook } from '@testing-library/react'
 
-import { useRumAction } from './use-rum-action';
-
-import { getGlobalObject } from '../utils/getGlobalObject';
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { useRumAction } from './use-rum-action'
 
 jest.mock('../utils/getGlobalObject', () => ({
-    getGlobalObject: jest.fn()
-}));
+  getGlobalObject: jest.fn(),
+}))
 
 describe('useRumAction', () => {
-    let rumAgent: {
-        addAction: ()=>void
-    };
-    let addActionSpy: jest.Mock;
+  let rumAgent: {
+    addAction: () => void
+  }
+  let addActionSpy: jest.Mock
 
-    beforeEach(() => {
-        addActionSpy = jest.fn();
-        rumAgent = {
-            addAction: addActionSpy,
-        } as any;
+  beforeEach(() => {
+    addActionSpy = jest.fn()
+    rumAgent = {
+      addAction: addActionSpy,
+    } as any
 
-        (getGlobalObject as jest.Mock).mockReturnValue({
-            DD_RUM: rumAgent
-        });
-    });
+    ;(getGlobalObject as jest.Mock).mockReturnValue({
+      DD_RUM: rumAgent,
+    })
+  })
 
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
 
-    it('should send an action with user-tracking purpose', () => {
-        const {
-            result: { current: addRumAction }
-        } = renderHook(() => useRumAction("action-fou-tracking"));
-        act(() => {
-            addRumAction('test-element', {
-                customAttr1: 'fou', 
-                customAttr2: 'fou'
-            });
-        });
+  it('should send an action with user-tracking purpose', () => {
+    const {
+      result: { current: addRumAction },
+    } = renderHook(() => useRumAction('action-fou-tracking'))
+    act(() => {
+      addRumAction('test-element', {
+        customAttr1: 'fou',
+        customAttr2: 'fou',
+      })
+    })
 
-        expect(rumAgent.addAction).toHaveBeenCalledTimes(1);
-        expect(
-            (rumAgent.addAction as jest.MockedFunction<
-                typeof rumAgent.addAction
-            >).mock.calls[0]
-        ).toMatchInlineSnapshot(`
+    expect(rumAgent.addAction).toHaveBeenCalledTimes(1)
+    expect((rumAgent.addAction as jest.MockedFunction<typeof rumAgent.addAction>).mock.calls[0]).toMatchInlineSnapshot(`
             Array [
               "test-element",
               Object {
@@ -59,6 +53,6 @@ describe('useRumAction', () => {
                 },
               },
             ]
-        `);
-    });
-});
+        `)
+  })
+})

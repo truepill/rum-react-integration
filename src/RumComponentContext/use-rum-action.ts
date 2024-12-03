@@ -1,7 +1,9 @@
-import { useContext } from 'react';
+import { useContext } from 'react'
 
-import { RumComponentContext } from './rum-component-context';
-import { getGlobalObject } from '../utils/getGlobalObject';
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { RumComponentContext } from './rum-component-context'
+
+type UseRumActionReturnValue = (name: string, customAttributes: Record<string, unknown> | undefined) => void
 
 /**
  * Utility to track actions in RUM with the component chain/breadcrumbs from <RumComponentContextProvider> automatically added
@@ -11,29 +13,26 @@ import { getGlobalObject } from '../utils/getGlobalObject';
  *
  * @param purpose: explains the use case for the action, allows to split performance and user-tracking actions for example
  */
-export const useRumAction = (
-    purpose: string = 'unknown'
-) => {
-    const componentContext = useContext(RumComponentContext);
-    const RumGlobal = getGlobalObject<Window>().DD_RUM
+export const useRumAction = (purpose = 'unknown'): UseRumActionReturnValue => {
+  const componentContext = useContext(RumComponentContext)
+  const RumGlobal = getGlobalObject<Window>().DD_RUM
 
-    if (!RumGlobal) {
-        console.warn(
-            '@datadog/rum-react-integration: Datadog RUM SDK is not initialized.'
-        );
-        return () => {};
-    }
+  if (!RumGlobal) {
+    console.warn('@datadog/rum-react-integration: Datadog RUM SDK is not initialized.')
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
+  }
 
-    return (name: string, customAttributes?: object) => {
-        RumGlobal.addAction(name, {
-            purpose,
-            ...componentContext.customAttributes,
-            ...customAttributes,
-            react: {
-                breadcrumbs: componentContext.componentBreadCrumbs,
-                component: componentContext.component,
-                ...(customAttributes as any)?.react
-            }
-        });
-    };
-};
+  return (name: string, customAttributes?: Record<string, unknown>) => {
+    RumGlobal.addAction(name, {
+      purpose,
+      ...componentContext.customAttributes,
+      ...customAttributes,
+      react: {
+        breadcrumbs: componentContext.componentBreadCrumbs,
+        component: componentContext.component,
+        ...(customAttributes as any)?.react,
+      },
+    })
+  }
+}

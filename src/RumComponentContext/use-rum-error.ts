@@ -1,36 +1,33 @@
-import { useContext } from 'react';
+import { useContext } from 'react'
 
-import { RumComponentContext } from './rum-component-context';
-import { getGlobalObject } from '../utils/getGlobalObject';
+import { getGlobalObject } from '../utils/getGlobalObject'
+import { RumComponentContext } from './rum-component-context'
+
+type UseRumErrorReturnValue = (error: unknown, customAttributes: Record<string, unknown> | undefined) => void
 
 /**
  * Utility to track errors in RUM with the component chain/breadcrumbs from <RumComponentContextProvider> automatically added
  *
  */
-export const useRumError = () => {
-    const componentContext = useContext(RumComponentContext);
-    const RumGlobal = getGlobalObject<Window>().DD_RUM
+export const useRumError = (): UseRumErrorReturnValue => {
+  const componentContext = useContext(RumComponentContext)
+  const RumGlobal = getGlobalObject<Window>().DD_RUM
 
-    if (!RumGlobal) {
-        console.warn(
-            '@datadog/rum-react-integration: Datadog RUM SDK is not initialized.'
-        );
-        return () => {};
-    }
+  if (!RumGlobal) {
+    console.warn('@datadog/rum-react-integration: Datadog RUM SDK is not initialized.')
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
+  }
 
-    return (error: unknown, customAttributes: object | undefined, source: "custom" | "network" | "source" | undefined) => {
-        RumGlobal.addError(
-            error,
-            {
-                ...componentContext.customAttributes,
-                ...customAttributes,
-                react: {
-                    breadcrumbs: componentContext.componentBreadCrumbs,
-                    component: componentContext.component,
-                    ...(customAttributes as any)?.react
-                }
-            },
-            source
-        );
-    };
-};
+  return (error: unknown, customAttributes: Record<string, unknown> | undefined) => {
+    RumGlobal.addError(error, {
+      ...componentContext.customAttributes,
+      ...customAttributes,
+      react: {
+        breadcrumbs: componentContext.componentBreadCrumbs,
+        component: componentContext.component,
+        ...(customAttributes as any)?.react,
+      },
+    })
+  }
+}
