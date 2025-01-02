@@ -19,9 +19,8 @@
     "format": "prettier --ignore-unknown --write src",
     "lint": "eslint --fix src",
     "typecheck": "scripts/cli typecheck . && scripts/cli typecheck developer-extension",
-    "test": "jest",
-    "test:ci": "jest --ci",
-    "test:cov": "jest --coverage"
+    "test": "vitest",
+    "test:ci": "vitest -c vitest.config.ts"
   },
   "dependencies": {
     "tslib": "^1.10.0"
@@ -32,14 +31,13 @@
   },
   "peerDependencies": {
     "react": ">=16",
-    "react-router-dom": "^5.0.0"
+    "react-router": "^7.1.1"
   },
   "devDependencies": {
     "@datadog/browser-rum-core": "^5.32.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
-    "@swc/core": "^1.9.3",
-    "@swc/jest": "^0.2.37",
+    "@vitejs/plugin-react-swc": "^3.7.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
@@ -47,24 +45,21 @@
     "@types/history": "^4",
     "@types/jest": "^26.0.24",
     "@types/node": "^22.10.1",
-    "@types/react": "18.3.12",
-    "@types/react-dom": "18.3.1",
-    "@types/react-router-dom": "^5.1.7",
-    "@typescript-eslint/eslint-plugin": "^4.30.0",
-    "@typescript-eslint/parser": "^4.30.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
     "eslint": "7.32.0",
     "history": "^4",
-    "jest": "^27.0.6",
-    "jest-junit": "^16.0.0",
-    "lefthook": "^1.10.10",
     "npm-run-all": "^4.1.5",
     "prettier": "2.2.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-router-dom": "^5.0.0",
-    "semantic-release": "^17.4.4",
-    "semantic-release-cli": "^5.4.3",
-    "ts-node": "10.8.2",
-    "typescript": "^4.3.5"
+    "react": "^18",
+    "react-dom": "^18",
+    "react-router": "^7.1.1",
+    "unplugin-swc": "^1.4.4",
+    "vite": "^5.4.11",
+    "vite-plugin-svgr": "^4.3.0",
+    "vitest": "^1.6.0",
+    "typescript": "^5.7.2"
   }
 }

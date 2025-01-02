@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "src",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "importHelpers": true,
@@ -10,9 +10,9 @@
     "target": "es5",
     "sourceMap": true,
     "jsx": "react-jsx",
-    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "types": ["node", "vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "lib": ["ES2016", "DOM"],
     "skipLibCheck": true
   },
-  "exclude": ["jest.*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "vitest.*.ts"]
 }

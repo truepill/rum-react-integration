@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react'
-import React from 'react'
+import { render } from '@testing-library/react'
+import type { MockInstance } from 'vitest'
 
 import { getGlobalObject } from '../utils/getGlobalObject'
 import { ErrorBoundary } from './ErrorBoundary'
 
-jest.mock('../utils/getGlobalObject', () => ({
-  getGlobalObject: jest.fn(),
+vi.mock('../utils/getGlobalObject', () => ({
+  getGlobalObject: vi.fn(),
 }))
 
 const Throws = () => {
@@ -13,41 +13,27 @@ const Throws = () => {
 }
 
 describe('ErrorBoundary', () => {
-  let onErrorSpy: jest.Mock
-  let addErrorSpy: jest.Mock
-
-  let rumAgent: {
-    addError: () => void
-  }
+  let addError: (error: unknown, context?: object) => void
 
   beforeEach(() => {
-    onErrorSpy = jest.fn()
-    addErrorSpy = jest.fn()
-
-    global.window.onerror = onErrorSpy
-    rumAgent = {
-      addError: addErrorSpy,
-    } as any
-    ;(getGlobalObject as jest.Mock).mockReturnValue({
-      DD_RUM: rumAgent,
+    addError = vi.fn()
+    ;((getGlobalObject as unknown) as MockInstance).mockReturnValue({
+      DD_RUM: {
+        addError,
+      },
     })
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
   })
 
   const ErrorRenderer = (error: Error) => <h1>Pretty error displayed {error.message}</h1>
 
   it('sends errors to addError', () => {
-    render(
+    const { getByText } = render(
       <ErrorBoundary fallback={ErrorRenderer}>
         <Throws />
       </ErrorBoundary>,
     )
 
-    screen.getByText(/Pretty error displayed/i)
-    expect(onErrorSpy).toHaveBeenCalled()
-    expect(addErrorSpy).toHaveBeenCalledTimes(1)
+    expect(getByText(/Pretty error displayed/i)).toBeInTheDocument()
+    expect(addError).toHaveBeenCalledTimes(1)
   })
 })

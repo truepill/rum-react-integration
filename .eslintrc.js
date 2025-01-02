@@ -47,5 +47,5 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: ['jest.config.ts', 'jest.setup.ts', '.eslintrc.js', '.prettierrc.js'],
+  ignorePatterns: ['vitest.config.ts', 'vitest.setup.ts', '.eslintrc.js', '.prettierrc.js'],
 }
