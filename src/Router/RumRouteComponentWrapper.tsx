@@ -10,6 +10,7 @@ function isClassComponent(component: RumRouteComponentType): component is React.
 }
 
 function isFunctionComponent(component: RumRouteComponentType): component is React.FunctionComponent<any> {
+  // eslint-disable-next-line no-prototype-builtins
   return typeof component === 'function' && component.hasOwnProperty('props') && isValidElement(component)
 }
 
@@ -18,7 +19,7 @@ function isReactRouterComponent(component: RumRouteComponentType): component is 
 }
 
 export const withRum = (component: RumRouteComponentType) =>
-  function RumView(props: RouteComponentProps) {
+  function RumView(props: RouteComponentProps): JSX.Element {
     useRef(
       (() => {
         if (!component) {

@@ -23,17 +23,21 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     scope: 'error-boundary',
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(props: any) {
     super(props)
     this.state = { hasError: false, prevScope: props.scope }
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(error: Error): { hasError: boolean; error: Error } {
     // Update state so the next render will show the fallback UI.
     return { hasError: true, error }
   }
 
-  static getDerivedStateFromProps(props: ErrorBoundaryProps, state: ErrorBoundaryState) {
+  static getDerivedStateFromProps(
+    props: ErrorBoundaryProps,
+    state: ErrorBoundaryState,
+  ): ErrorBoundaryState | { hasError: boolean; error: undefined; prevScope: string | undefined } {
     if (state.prevScope !== props.scope) {
       return {
         hasError: false,
@@ -45,7 +49,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return state
   }
 
-  componentDidCatch(error: Error) {
+  componentDidCatch(error: Error): void {
     const RumGlobal = getGlobalObject<Window>().DD_RUM
     if (RumGlobal) {
       RumGlobal.addError(error, {
@@ -54,7 +58,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
   }
 
-  render() {
+  render(): ReactNode {
     const { hasError, error } = this.state
     const { fallback } = this.props
 

@@ -1,11 +1,9 @@
-import { renderHook, act } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import React from 'react'
 
-import { RumComponentContextProvider } from './RumComponentContext'
-
-import { useRumAction } from './use-rum-action'
-
 import { getGlobalObject } from '../utils/getGlobalObject'
+import { RumComponentContextProvider } from './RumComponentContext'
+import { useRumAction } from './use-rum-action'
 
 jest.mock('../utils/getGlobalObject', () => ({
   getGlobalObject: jest.fn(),
@@ -22,7 +20,6 @@ describe('useRumAction', () => {
     rumAgent = {
       addAction: addActionSpy,
     } as any
-
     ;(getGlobalObject as jest.Mock).mockReturnValue({
       DD_RUM: rumAgent,
     })

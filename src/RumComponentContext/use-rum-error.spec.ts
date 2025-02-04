@@ -18,7 +18,6 @@ describe('useRumError', () => {
     rumAgent = {
       addError: addErrorSpy,
     } as any
-
     ;(getGlobalObject as jest.Mock).mockReturnValue({
       DD_RUM: rumAgent,
     })

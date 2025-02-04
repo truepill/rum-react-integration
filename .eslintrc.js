@@ -47,17 +47,5 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: [
-    '__mocks__',
-    'jest.config.ts',
-    '.babelrc',
-    'jest.setup.ts',
-    '.eslintrc.js',
-    '.prettierrc.js',
-    'e2e',
-    'getContentfulEnvironment.js',
-    '**/*.test.tsx',
-    'src/testing',
-    'vite.config.ts',
-  ],
+  ignorePatterns: ['jest.config.ts', 'jest.setup.ts', '.eslintrc.js', '.prettierrc.js'],
 }

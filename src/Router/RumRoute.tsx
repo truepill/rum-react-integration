@@ -6,7 +6,7 @@ import { withRum } from './RumRouteComponentWrapper'
 
 type RumRouteProps = RouteProps
 
-export const RumRoute = ({ children, component, render, ...otherProps }: RumRouteProps) => {
+export const RumRoute: React.FC<RumRouteProps> = ({ children, component, render, ...otherProps }) => {
   const RumComponent = useMemo(() => {
     // this is react-router priority
     return withRum(children ?? component ?? render)
