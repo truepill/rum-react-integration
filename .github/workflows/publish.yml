@@ -6,6 +6,7 @@ on:
 
 env:
   NODE_VERSION: 22
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   publish:
@@ -31,13 +32,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build
         run: pnpm run build
 
       - name: Publish 🚀
         run: pnpm publish --no-git-checks
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
