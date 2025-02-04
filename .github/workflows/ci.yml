@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
+          registry-url: https://npm.pkg.github.com/
+          scope: '@truepill'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -35,10 +37,3 @@ jobs:
 
       - name: Test
         run: pnpm run test:ci
-
-      - if: always()
-        uses: AthleticNet/comment-test-coverage@1.2.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: coverage/coverage-summary.json
-          title: Backend Test Coverage
