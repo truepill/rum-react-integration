@@ -5,7 +5,6 @@ on:
   - pull_request
 
 env:
-  NODE_VERSION: 22
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
@@ -22,10 +21,10 @@ jobs:
           version: 9
           run_install: false
 
-      - name: Install Node.js v${{ env.NODE_VERSION }}
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
           registry-url: https://npm.pkg.github.com/
           scope: '@truepill'

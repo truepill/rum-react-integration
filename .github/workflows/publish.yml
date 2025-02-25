@@ -1,11 +1,12 @@
 name: Publish Package
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
 
 env:
-  NODE_VERSION: 22
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
@@ -22,10 +23,10 @@ jobs:
           version: 9
           run_install: false
 
-      - name: Install Node.js v${{ env.NODE_VERSION }}
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
           registry-url: https://npm.pkg.github.com/
           scope: '@truepill'
@@ -37,4 +38,5 @@ jobs:
         run: pnpm run build
 
       - name: Publish 🚀
-        run: pnpm publish --no-git-checks
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
