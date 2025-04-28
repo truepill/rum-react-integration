@@ -21,7 +21,7 @@ describe('useRumAction', () => {
     rumAgent = {
       addAction: addActionSpy,
     } as any
-    ;((getGlobalObject as unknown) as MockInstance).mockReturnValue({
+    ;(getGlobalObject as unknown as MockInstance).mockReturnValue({
       DD_RUM: rumAgent,
     })
   })

@@ -19,7 +19,6 @@ export const useRumAction = (purpose = 'unknown'): UseRumActionReturnValue => {
 
   if (!RumGlobal) {
     console.warn('@datadog/rum-react-integration: Datadog RUM SDK is not initialized.')
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {}
   }
 

@@ -4,7 +4,9 @@
     "baseUrl": ".",
     "declaration": true,
     "allowJs": true,
+    "moduleResolution": "node",
     "module": "commonjs",
+    "target": "es5",
     "outDir": "./cjs/"
   },
   "include": ["./src"],
