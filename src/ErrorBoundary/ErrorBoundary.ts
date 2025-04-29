@@ -7,13 +7,14 @@ type FallbackRenderer = (error: Error) => React.ReactNode
 interface ErrorBoundaryState {
   hasError: boolean
   error?: Error
-  prevScope: string
+  prevScope?: string
 }
 
-export interface ErrorBoundaryProps extends React.PropsWithChildren {
-  fallback: ReactNode | FallbackRenderer
-  scope?: string
-}
+export interface ErrorBoundaryProps
+  extends React.PropsWithChildren<{
+    fallback: ReactNode | FallbackRenderer
+    scope?: string
+  }> {}
 
 /**
  * ErrorBoundary component sends enriched errors to RUM.
@@ -23,8 +24,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     scope: 'error-boundary',
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(props: any) {
+  constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { hasError: false, prevScope: props.scope }
   }

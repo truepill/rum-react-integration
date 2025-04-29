@@ -45,17 +45,16 @@ export function WithRumComponentContext<PropsType extends JSX.IntrinsicAttribute
 ): React.FunctionComponent<PropsType>
 export function WithRumComponentContext<PropsType extends JSX.IntrinsicAttributes>(
   componentName: string,
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  options: any,
+  optionsOrComponent: any,
   Component?: React.FunctionComponent<PropsType>,
 ): React.FunctionComponent<PropsType> {
   if (typeof Component === 'undefined') {
-    return WithRumComponentContext(componentName, {}, options)
+    return WithRumComponentContext(componentName, {}, optionsOrComponent as React.FunctionComponent<PropsType>)
   }
   // eslint-disable-next-line react/display-name
   return (props: PropsType) => {
     return (
-      <RumComponentContextProvider componentName={componentName} customAttributes={options.customAttributes}>
+      <RumComponentContextProvider componentName={componentName} customAttributes={optionsOrComponent.customAttributes}>
         <Component {...props} />
       </RumComponentContextProvider>
     )

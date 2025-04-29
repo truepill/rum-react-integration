@@ -1,1 +1,1 @@
-export { RumRoute } from './RumRoute'
+export { default as RumRouterExtension } from './RumRouterExtension'

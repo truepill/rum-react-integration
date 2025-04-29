@@ -1,32 +1,29 @@
 import { act, renderHook } from '@testing-library/react'
 import React from 'react'
+import { MockInstance } from 'vitest'
 
 import { getGlobalObject } from '../utils/getGlobalObject'
 import { RumComponentContextProvider } from './RumComponentContext'
 import { useRumAction } from './use-rum-action'
 
-jest.mock('../utils/getGlobalObject', () => ({
-  getGlobalObject: jest.fn(),
+vi.mock('../utils/getGlobalObject', () => ({
+  getGlobalObject: vi.fn(),
 }))
 
 describe('useRumAction', () => {
   let rumAgent: {
     addAction: () => void
   }
-  let addActionSpy: jest.Mock
+  let addActionSpy: MockInstance
 
   beforeEach(() => {
-    addActionSpy = jest.fn()
+    addActionSpy = vi.fn()
     rumAgent = {
       addAction: addActionSpy,
     } as any
-    ;(getGlobalObject as jest.Mock).mockReturnValue({
+    ;(getGlobalObject as unknown as MockInstance).mockReturnValue({
       DD_RUM: rumAgent,
     })
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
   })
 
   it('should send an action with user-tracking purpose', () => {
@@ -41,20 +38,15 @@ describe('useRumAction', () => {
     })
 
     expect(rumAgent.addAction).toHaveBeenCalledTimes(1)
-    expect((rumAgent.addAction as jest.MockedFunction<typeof rumAgent.addAction>).mock.calls[0]).toMatchInlineSnapshot(`
-            Array [
-              "test-element",
-              Object {
-                "customAttr1": "fou",
-                "customAttr2": "fou",
-                "purpose": "action-fou-tracking",
-                "react": Object {
-                  "breadcrumbs": "root",
-                  "component": "root",
-                },
-              },
-            ]
-        `)
+    expect(rumAgent.addAction).toHaveBeenCalledWith('test-element', {
+      customAttr1: 'fou',
+      customAttr2: 'fou',
+      purpose: 'action-fou-tracking',
+      react: {
+        breadcrumbs: 'root',
+        component: 'root',
+      },
+    })
   })
 
   it('should use the context to fill element and breadcrumbs', () => {
@@ -72,20 +64,14 @@ describe('useRumAction', () => {
       })
     })
 
-    expect(rumAgent.addAction).toHaveBeenCalledTimes(1)
-    expect((rumAgent.addAction as jest.MockedFunction<typeof rumAgent.addAction>).mock.calls[0]).toMatchInlineSnapshot(`
-            Array [
-              "test-element",
-              Object {
-                "customAttr1": "fou",
-                "customAttr2": "fou",
-                "purpose": "action-fou-tracking",
-                "react": Object {
-                  "breadcrumbs": "root.ComponentToTrack",
-                  "component": "ComponentToTrack",
-                },
-              },
-            ]
-        `)
+    expect(rumAgent.addAction).toHaveBeenCalledWith('test-element', {
+      customAttr1: 'fou',
+      customAttr2: 'fou',
+      purpose: 'action-fou-tracking',
+      react: {
+        breadcrumbs: 'root.ComponentToTrack',
+        component: 'ComponentToTrack',
+      },
+    })
   })
 })

@@ -1,7 +1,7 @@
 import type { RumPublicApi } from '@datadog/browser-rum-core'
 
 export { ErrorBoundary } from './ErrorBoundary'
-export { RumRoute } from './Router'
+export { RumRouterExtension } from './Router'
 export { RumComponentContextProvider, useRumAction, useRumError, WithRumComponentContext } from './RumComponentContext'
 
 declare global {

@@ -1,30 +1,31 @@
 import { act, renderHook } from '@testing-library/react'
+import { MockInstance } from 'vitest'
 
 import { getGlobalObject } from '../utils/getGlobalObject'
 import { useRumError } from './use-rum-error'
 
-jest.mock('../utils/getGlobalObject', () => ({
-  getGlobalObject: jest.fn(),
+vi.mock('../utils/getGlobalObject', () => ({
+  getGlobalObject: vi.fn(),
 }))
 
 describe('useRumError', () => {
   let rumAgent: {
     addError: () => void
   }
-  let addErrorSpy: jest.Mock
+  let addErrorSpy: MockInstance
 
   beforeEach(() => {
-    addErrorSpy = jest.fn()
+    addErrorSpy = vi.fn()
     rumAgent = {
       addError: addErrorSpy,
     } as any
-    ;(getGlobalObject as jest.Mock).mockReturnValue({
+    ;(getGlobalObject as unknown as MockInstance).mockReturnValue({
       DD_RUM: rumAgent,
     })
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should send an error with custom attributes and given source', () => {
@@ -43,21 +44,19 @@ describe('useRumError', () => {
     })
 
     expect(rumAgent.addError).toHaveBeenCalledTimes(1)
-    expect((rumAgent.addError as jest.MockedFunction<typeof rumAgent.addError>).mock.calls[0]).toMatchInlineSnapshot(`
-            Array [
-              Object {
-                "errorFou": "fou",
-                "message": "bar",
-              },
-              Object {
-                "customAttr1": "fou",
-                "customAttr2": "fou",
-                "react": Object {
-                  "breadcrumbs": "root",
-                  "component": "root",
-                },
-              },
-            ]
-        `)
+    expect(rumAgent.addError).toHaveBeenCalledWith(
+      {
+        errorFou: 'fou',
+        message: 'bar',
+      },
+      {
+        customAttr1: 'fou',
+        customAttr2: 'fou',
+        react: {
+          breadcrumbs: 'root',
+          component: 'root',
+        },
+      },
+    )
   })
 })
