@@ -10,11 +10,11 @@ Depending on the type of your change, you need to follow the following commit me
   
 `feat: add tracking for cart button press`
 
-| Commit 	            | Release Type     	| Definition                                                  	|
-|------------------   |------------------	|-------------------------------------------------------------	|
-| fix:   	            | Patch release    	| When you make backward compatible bug fixes                 	|
-| feat:  	            | Feature release  	| When you add functionality in a backwards compatible manner 	|
-| BREAKING CHANGE:  	| Breaking release 	| When you make incompatible API changes                      	|
+| Commit message                                                                                                                                                                                   | Release type                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                             | ~~Patch~~ Fix Release                                                                                           |
+| `feat(pencil): add 'graphiteWidth' option`                                                                                                                                                       | ~~Minor~~ Feature Release                                                                                       |
+| `perf(pencil): remove graphiteWidth option`<br><br>`BREAKING CHANGE: The graphiteWidth option has been removed.`<br>`The default graphite width of 10mm is always used for performance reasons.` | ~~Major~~ Breaking Release <br /> (Note that the `BREAKING CHANGE: ` token must be in the footer of the commit) |
 
 Note: You should at all time avoid breaking changes where possible.
 
