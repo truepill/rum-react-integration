@@ -5,7 +5,7 @@
  */
 export function getGlobalObject<T>(): T {
   if (typeof globalThis === 'object') {
-    return (globalThis as unknown) as T
+    return globalThis as unknown as T
   }
   Object.defineProperty(Object.prototype, '_dd_temp_', {
     get() {

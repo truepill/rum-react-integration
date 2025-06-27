@@ -7,7 +7,7 @@ Datadog react integration used by Truepill Vpharm 🚀.
 This package is published to Github Packages using [Semantic Release](https://github.com/semantic-release/semantic-release)/[Semver](https://semver.org/)
 
 Depending on the type of your change, you need to follow the following commit message styles:
-  
+
 `feat: add tracking for cart button press`
 
 | Commit message                                                                                                                                                                                   | Release type                                                                                                    |
